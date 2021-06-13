@@ -12,6 +12,18 @@
 
 using namespace std;
 
+/* Replacement for deprecated usleep call in unistd.h */
+inline int usleep( int usecdelay){
+    struct timespec delaytime;
+    int retval;
+
+    delaytime.tv_sec = usecdelay / 1000000;
+    delaytime.tv_nsec = (usecdelay % 1000000) * 1000L;
+
+    while (retval = nanosleep(&delaytime, &delaytime) && errno == EINTR);
+    return retval;
+}
+
 inline char complement(char base) {
     switch(base){
         case 'A':
